@@ -14,9 +14,9 @@ async def root(request: Request):
     request_body = await request.json()
     story = request_body["story"]
 
-    headline = story.get["headline"]
-    story_id = story.get["story-content-id"]
-    author = story.get["authors"][0]['name']
+    headline = story["headline"]
+    story_id = story["story-content-id"]
+    author = story["authors"][0]['name']
 
     # Replace with your authorization token
     auth_token = getfcmtoken.get_fcm_token()
