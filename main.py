@@ -56,8 +56,8 @@ async def root(request: Request):
     except:
         #return "Error"
         pass
-    
-    return {json.loads(request_body)}
+    print(request_body)
+    return {"message":"function ran!"}
 
 
 @app.get("/path")
