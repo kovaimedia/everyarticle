@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from fastapi import Request
 import getfcmtoken
-import requests
+import requests, json
 
 app = FastAPI()
 
@@ -57,7 +57,7 @@ async def root(request: Request):
         #return "Error"
         pass
     
-    return {request_body}
+    return {json.loads(request_body)}
 
 
 @app.get("/path")
