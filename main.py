@@ -12,7 +12,7 @@ class Msg(BaseModel):
 @app.post("/")
 async def root(request: Request):
     request_body = await request.json()
-    story = request_body["story"]
+    story = request_body
 
     headline = story["headline"]
     story_id = story["story-content-id"]
