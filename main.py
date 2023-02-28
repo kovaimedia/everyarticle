@@ -10,7 +10,7 @@ class Msg(BaseModel):
     msg: str
 
 
-@app.get("/")
+@app.post("/")
 async def root(request: Request):
     request_body = await request.json()
     story = request_body.get("story") 
