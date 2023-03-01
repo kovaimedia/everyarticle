@@ -27,8 +27,8 @@ async def root(request: Request):
     payload = {
         "message": {
             "notification": {
-                "title": headline,
-                "body":  author
+                "title": author,
+                "body":  headline
             },
             "data": {
                 "notification_type": "article",
