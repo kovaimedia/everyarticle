@@ -21,7 +21,7 @@ async def root(request: Request):
     # Replace with your authorization token
     auth_token = getfcmtoken.get_fcm_token()
 
-    amar_iid = 'c-rJYjU1RPuq1pSE_cb57F:APA91bGD7oHGev7tm8i5DrueFKu9CjPU1ufCX-tM4r4P94jBJ4lFjJyplatMHjal0UVYWFK5hC0j-4sjBWTKTVhnYsm3I9MFjuHOLd9yTDIgtCoSqLW8O2UAPT3ygNI617zqOFXUO3mO'
+    amar_iid = 'cycT4JX7TeyB1aewW5fZaj:APA91bEwrRp2sZ4m2Py8RJqFivlXJDFKfEVHWaINy9EUDwjxTEfSnCBb3JxakwKPpnNaxZZ3iKQl_ehIogjsxvqFUQoJFgSfNwlWVmMy1H8ey1CaS9gYYONDA6PdwWUMzYlfIrjAlvDB'
     
     # Replace with your notification payload
     payload = {
