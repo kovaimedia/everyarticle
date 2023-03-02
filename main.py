@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from fastapi import Request
 import getfcmtoken
 import requests, json
+import os
 
 app = FastAPI()
 
@@ -21,7 +22,8 @@ async def root(request: Request):
     # Replace with your authorization token
     auth_token = getfcmtoken.get_fcm_token()
 
-    amar_iid = 'cycT4JX7TeyB1aewW5fZaj:APA91bEwrRp2sZ4m2Py8RJqFivlXJDFKfEVHWaINy9EUDwjxTEfSnCBb3JxakwKPpnNaxZZ3iKQl_ehIogjsxvqFUQoJFgSfNwlWVmMy1H8ey1CaS9gYYONDA6PdwWUMzYlfIrjAlvDB'
+    #get environment variable named 'amar_iid'
+    amar_iid = os.environ.get('amar_iid')
     
     # Replace with your notification payload
     payload = {
