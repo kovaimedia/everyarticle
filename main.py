@@ -56,7 +56,6 @@ async def root(request: Request):
     except:
         #return "Error"
         pass
-    print(request_body)
     return {"message":"function ran!"}
 
 
