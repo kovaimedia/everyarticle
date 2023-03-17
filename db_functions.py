@@ -9,22 +9,22 @@ conn = psycopg2.connect(
     port="7130"
 )
 
-
 #add article to database
-async def insert_article(article_title: str, article_url: str, source: str):
+def insert_article(article_title: str, article_url: str, source: str):
     cursor = conn.cursor()
     cursor.execute("INSERT INTO articles (article_title, article_url, source) VALUES (%s, %s, %s)", (article_title, article_url, source))
     conn.commit()
     cursor.close()
+    print("Inserting: " + article_title)
     return {"article_title": article_title, "article_url": article_url}
 
-#check if article is already in database, use url as unique identifier
-async def check_article(article_url: str):
+#check if article is already in database, use url as unique identifier, return 0 if no record found
+def check_article(article_url):
     cursor = conn.cursor()
-    cursor.execute("SELECT article_url FROM articles WHERE article_url = %s", (article_url))
+    cursor.execute("SELECT article_url FROM articles WHERE article_url = %s", (article_url,))
     article = cursor.fetchone()
     cursor.close()
-    if len(article) == 1:
-        return 1
-    else:
+    if article == None:
         return 0
+    else:
+        return 1

@@ -6,6 +6,12 @@ import requests, json
 import os
 import checksites
 
+#use apscheduler to run check_sites every 10 minutes
+from apscheduler.schedulers.background import BackgroundScheduler
+scheduler = BackgroundScheduler()
+scheduler.add_job(checksites.check_sites_now, 'interval', minutes=10)
+    
+
 app = FastAPI()
 
 class Msg(BaseModel):

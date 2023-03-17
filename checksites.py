@@ -4,7 +4,6 @@ import db_functions
 from json import dumps
 from httplib2 import Http
 
-
 def get_from_ETInfra_and_Mint():
 
     url = 'https://infra.economictimes.indiatimes.com/news'
@@ -31,11 +30,10 @@ def get_from_ETInfra_and_Mint():
         if a_tag:
             link = a_tag['href']
             text = a_tag.text.strip()
-            articles.append({"title": text, "link": link,"source":"Mint Infra"})
+            articles.append({"title": text, "link": "https://www.livemint.com/industry" + link,"source":"Mint Infra"})
 
 
     return articles
-
 
 def check_sites_now():
     articles_list = get_from_ETInfra_and_Mint()
@@ -43,18 +41,14 @@ def check_sites_now():
         article_title = every_article['title']
         article_url = every_article['link']
         article_source = every_article['source']
-        print(every_article[['title']])
-        print(db_functions.check_article(article_url))
-        if db_functions.check_article(article_url) is 0:
+        if db_functions.check_article(article_url) == 0:
             db_functions.insert_article(article_title, article_url, article_source)
             trigger_notification(article_title, article_url, article_source)
-        else:
-            print("Article already in database")
-
-def trigger_notification(article_source, article_title, article_url):
+        
+def trigger_notification(article_title, article_url, article_source):
     url = "https://chat.googleapis.com/v1/spaces/AAAARuukzVI/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=fhG7J3pAj5PINzAOKQ7wZjQHJrzhOlxvFeSm0cBQ_1o%3D"
   
-    message = "*New Article from " + article_source + "*\n" + article_title + "\n" + article_url + "\n---\n"
+    message = "\n*New Article from " + article_source + "*\n" + article_title + "\n" + article_url + "\n---\n---\n"
 
     bot_message = {
         'text': message
@@ -68,5 +62,3 @@ def trigger_notification(article_source, article_title, article_url):
         headers=message_headers,
         body=dumps(bot_message),
     )
-    print(response)
-
