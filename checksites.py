@@ -3,6 +3,10 @@ from bs4 import BeautifulSoup
 import db_functions
 from json import dumps
 from httplib2 import Http
+import pytz
+from datetime import datetime
+
+
 
 def get_from_ETInfra_and_Mint():
 
@@ -36,6 +40,13 @@ def get_from_ETInfra_and_Mint():
     return articles
 
 def check_sites_now():
+   
+    # set the timezone to IST
+    ist = pytz.timezone('Asia/Kolkata')
+    # get the current time in IST
+    now = datetime.now(ist)
+
+    print("Starting site check process -> " + str(now))
     articles_list = get_from_ETInfra_and_Mint()
     for every_article in articles_list:
         article_title = every_article['title']

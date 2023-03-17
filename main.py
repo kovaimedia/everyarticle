@@ -10,7 +10,7 @@ import checksites
 from apscheduler.schedulers.background import BackgroundScheduler
 scheduler = BackgroundScheduler()
 scheduler.add_job(checksites.check_sites_now, 'interval', minutes=10)
-    
+scheduler.start()
 
 app = FastAPI()
 
