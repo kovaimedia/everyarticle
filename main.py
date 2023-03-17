@@ -4,6 +4,7 @@ from fastapi import Request
 import getfcmtoken
 import requests, json
 import os
+import checksites
 
 app = FastAPI()
 
@@ -61,10 +62,10 @@ async def root(request: Request):
     return {"message":"function ran!"}
 
 
-@app.get("/path")
-async def demo_get():
-    return {"message": "This is /path endpoint, use a post request to transform the text to uppercase"}
-
+@app.get("/runcheck")
+async def run_check():
+    checksites.check_sites_now()
+    return {"message": "Ran web checks"}
 
 @app.post("/path")
 async def demo_post(inp: Msg):
