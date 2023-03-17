@@ -43,6 +43,7 @@ def check_sites_now():
         article_title = every_article['title']
         article_url = every_article['link']
         article_source = every_article['source']
+        print(db_functions.check_article(article_url))
         if db_functions.check_article(article_url) is 0:
             db_functions.insert_article(article_title, article_url, article_source)
             trigger_notification(article_title, article_url, article_source)
@@ -68,4 +69,3 @@ def trigger_notification(article_source, article_title, article_url):
     )
     print(response)
 
-trigger_notification("ET", "1", "2") 
