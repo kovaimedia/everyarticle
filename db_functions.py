@@ -21,7 +21,10 @@ async def insert_article(article_title: str, article_url: str, source: str):
 #check if article is already in database, use url as unique identifier
 async def check_article(article_url: str):
     cursor = conn.cursor()
-    cursor.execute("SELECT article_url FROM articles WHERE article_url = %s", (article_url,))
+    cursor.execute("SELECT article_url FROM articles WHERE article_url = %s", (article_url))
     article = cursor.fetchone()
     cursor.close()
-    return article
+    if len(article) == 1:
+        return 1
+    else:
+        return 0
