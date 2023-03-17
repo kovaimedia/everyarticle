@@ -43,6 +43,7 @@ def check_sites_now():
         article_title = every_article['title']
         article_url = every_article['link']
         article_source = every_article['source']
+        print(every_article[['title']]])
         print(db_functions.check_article(article_url))
         if db_functions.check_article(article_url) is 0:
             db_functions.insert_article(article_title, article_url, article_source)
