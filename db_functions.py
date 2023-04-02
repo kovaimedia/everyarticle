@@ -2,6 +2,9 @@ import psycopg2
 import datetime
 import pytz
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 #connect using psycopg2 with a connection string
 conn = psycopg2.connect(
@@ -21,7 +24,7 @@ def insert_article(article_title: str, article_url: str, source: str):
     time_now = datetime.datetime.now(tz)    
 
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO scrapped_articles (article_title, article_url, source, time_of_insertion) VALUES (%s, %s, %s)", (article_title, article_url, source, time_now))
+    cursor.execute("INSERT INTO scrapped_articles (article_title, article_url, source, time_of_insertion) VALUES (%s, %s, %s, %s)", (article_title, article_url, source, time_now))
     conn.commit()
     cursor.close()
     
@@ -50,3 +53,4 @@ def get_articles(source):
     for article in articles:
         articles_json.append({"article_title": article[0], "article_url": article[1], "time_of_insertion": article[2]})
     return articles_json
+
