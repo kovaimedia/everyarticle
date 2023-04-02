@@ -7,7 +7,6 @@ import pytz
 from datetime import datetime
 
 
-
 def get_from_ETInfra_and_Mint():
 
     url = 'https://infra.economictimes.indiatimes.com/news'
@@ -47,6 +46,7 @@ def check_sites_now():
     now = datetime.now(ist)
 
     print("Starting site check process -> " + str(now))
+    
     articles_list = get_from_ETInfra_and_Mint()
     for every_article in articles_list:
         article_title = every_article['title']

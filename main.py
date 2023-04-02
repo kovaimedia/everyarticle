@@ -5,6 +5,7 @@ import getfcmtoken
 import requests, json
 import os
 import checksites
+import db_functions
 
 #use apscheduler to run check_sites every 10 minutes
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -81,3 +82,9 @@ async def demo_post(inp: Msg):
 @app.get("/path/{path_id}")
 async def demo_get_path_id(path_id: int):
     return {"message": f"This is /path/{path_id} endpoint, use post request to retrieve result"}
+
+#route to call get_articles function from db_functions.py
+@app.get("/articles/{source}")
+async def get_articles(source: str):
+    articles = db_functions.get_articles(source)
+    return articles
