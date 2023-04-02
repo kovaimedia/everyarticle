@@ -5,11 +5,11 @@ import os
 
 #connect using psycopg2 with a connection string
 conn = psycopg2.connect(
-    dbname="railway",
-    user="postgres",
-    password= os.getenv("db_password"),
-    host= os.getenv("db_host"),
-    port="6956"
+    dbname=os.getenv("PGDATABASE"),
+    user=os.getenv("PGUSER"),
+    password= os.getenv("PGPASSWORD"),
+    host= os.getenv("PGHOST"),
+    port= os.getenv("PGPORT")
 )
 
 
