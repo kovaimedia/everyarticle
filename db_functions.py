@@ -46,7 +46,7 @@ def check_article(article_url):
 #get parameter about which source and return 15 latest articles
 def get_articles(source):
     cursor = conn.cursor()
-    cursor.execute("SELECT article_title, article_url, time_of_insertion FROM scrapped_articles WHERE source = %s ORDER BY id DESC LIMIT 25", (source,))
+    cursor.execute("SELECT article_title, article_url, time_of_insertion FROM scrapped_articles WHERE source = %s ORDER BY time_of_insertion DESC LIMIT 25", (source,))
     articles = cursor.fetchall()
     cursor.close()
     #parse articles into a json
