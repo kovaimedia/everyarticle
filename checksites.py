@@ -1,42 +1,15 @@
-import requests
-from bs4 import BeautifulSoup
+import sitescripts
 import db_functions
 from json import dumps
 from httplib2 import Http
 import pytz
 from datetime import datetime
 
-
-def get_from_ETInfra_and_Mint():
-
-    url = 'https://infra.economictimes.indiatimes.com/news'
-    response = requests.get(url)
-
-    soup = BeautifulSoup(response.content, 'html.parser')
-
-    articles = []
-
-    for h3 in soup.find_all('h3'):
-        a_tag = h3.find('a')
-        if a_tag:
-            link = a_tag['href'] 
-            text = a_tag.text.strip()
-            articles.append({"title": text, "link": link,"source":"ET Infra"})
-
-    url = 'https://www.livemint.com/industry/infrastructure'
-    response = requests.get(url)
-
-    soup = BeautifulSoup(response.content, 'html.parser')
     
-    for h3 in soup.find_all('h2'):
-        a_tag = h3.find('a')
-        if a_tag:
-            link = a_tag['href']
-            text = a_tag.text.strip()
-            articles.append({"title": text, "link": "https://www.livemint.com/industry" + link,"source":"Mint Infra"})
-
-
-    return articles
+Nitin_Gadkari_alert = "https://www.google.com/alerts/feeds/10475738491546675429/9073726971275308502"
+MORTH_alert = "https://www.google.com/alerts/feeds/10475738491546675429/14736463604676785656"
+RRTS_alert = "https://www.google.com/alerts/feeds/10475738491546675429/5870660820628805083"
+vande_bharat = "https://www.google.com/alerts/feeds/10475738491546675429/7073915936907604684"
 
 def check_sites_now():
    
@@ -47,7 +20,26 @@ def check_sites_now():
 
     print("Starting site check process -> " + str(now))
     
-    articles_list = get_from_ETInfra_and_Mint()
+    articles_list = sitescripts.get_from_ETInfra_and_Mint()
+    process_articles_list(articles_list)
+
+    articles_list = sitescripts.fetch_rss(
+        Nitin_Gadkari_alert, "Nitin Gadkari Alert")
+    process_articles_list(articles_list)
+
+    articles_list = sitescripts.fetch_rss(
+        MORTH_alert, "MORTH Alert")
+    process_articles_list(articles_list)
+
+    articles_list = sitescripts.fetch_rss(
+        RRTS_alert, "RRTS Alert")
+    process_articles_list(articles_list)
+    
+    articles_list = sitescripts.fetch_rss(
+        vande_bharat, "Vande Bharat Alert")
+    process_articles_list(articles_list)
+
+def process_articles_list(articles_list):
     for every_article in articles_list:
         article_title = every_article['title']
         article_url = every_article['link']
@@ -55,7 +47,8 @@ def check_sites_now():
         if db_functions.check_article(article_url) == 0:
             db_functions.insert_article(article_title, article_url, article_source)
             trigger_notification(article_title, article_url, article_source)
-        
+
+
 def trigger_notification(article_title, article_url, article_source):
     url = "https://chat.googleapis.com/v1/spaces/AAAARuukzVI/messages?key=AIzaSyDdI0hCZtE6vySjMm-WEfRq3CPzqKqqsHI&token=fhG7J3pAj5PINzAOKQ7wZjQHJrzhOlxvFeSm0cBQ_1o%3D"
   
@@ -73,3 +66,5 @@ def trigger_notification(article_title, article_url, article_source):
         headers=message_headers,
         body=dumps(bot_message),
     )
+
+check_sites_now()

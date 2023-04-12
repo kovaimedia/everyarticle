@@ -51,6 +51,12 @@ def get_articles(source):
     #parse articles into a json
     articles_json = []
     for article in articles:
-        articles_json.append({"article_title": article[0], "article_url": article[1], "time_of_insertion": article[2]})
+        #get time lapsed between now and article[2] in days, minutes, hours format
+        time_lapsed = datetime.datetime.now() - article[2]
+        
+        #caculate time lapsed in days, hours, minutes format
+        minutes = (time_lapsed.seconds // 60) % 60
+        time_lapsed =  str(minutes) + "m"
+        articles_json.append({"article_title": article[0], "article_url": article[1], "time_of_insertion": article[2], "time_lapsed": time_lapsed})
     return articles_json
 

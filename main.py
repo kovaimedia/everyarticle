@@ -88,3 +88,4 @@ async def demo_get_path_id(path_id: int):
 async def get_articles(source: str):
     articles = db_functions.get_articles(source)
     return articles
+
