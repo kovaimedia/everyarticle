@@ -57,8 +57,9 @@ def get_articles(source):
         #convert article[2] to datetime object
         tz = pytz.timezone('Asia/Kolkata')
         time_now = datetime.datetime.now(tz) 
+        time_now = dateutil.parser.parse(time_now.strftime("%Y-%m-%d %H:%M:%S.%f%z"))
         orig_time = dateutil.parser.parse(str(article[2]))   
-        
+
         time_lapsed = time_now - orig_time
         
         #caculate time lapsed in days, hours, minutes format
