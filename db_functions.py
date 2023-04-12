@@ -3,6 +3,7 @@ import datetime
 import pytz
 import os
 from dotenv import load_dotenv
+import dateutil.parser
 
 load_dotenv()
 
@@ -49,10 +50,16 @@ def get_articles(source):
     articles = cursor.fetchall()
     cursor.close()
     #parse articles into a json
+  
     articles_json = []
     for article in articles:
         #get time lapsed between now and article[2] in days, minutes, hours format
-        time_lapsed = datetime.datetime.now() - article[2]
+        #convert article[2] to datetime object
+        tz = pytz.timezone('Asia/Kolkata')
+        time_now = datetime.datetime.now(tz) 
+        orig_time = dateutil.parser.parse(str(article[2]))   
+        
+        time_lapsed = time_now - orig_time
         
         #caculate time lapsed in days, hours, minutes format
         minutes = (time_lapsed.seconds // 60) % 60
