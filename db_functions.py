@@ -4,6 +4,7 @@ import pytz
 import os
 from dotenv import load_dotenv
 import dateutil.parser
+import timeago
 
 load_dotenv()
 
@@ -45,6 +46,7 @@ def check_article(article_url):
 
 #get parameter about which source and return 15 latest articles
 def get_articles(source):
+   
     cursor = conn.cursor()
     cursor.execute("SELECT article_title, article_url, time_of_insertion FROM scrapped_articles WHERE source = %s ORDER BY time_of_insertion DESC LIMIT 25", (source,))
     articles = cursor.fetchall()
@@ -53,18 +55,18 @@ def get_articles(source):
   
     articles_json = []
     for article in articles:
+        
         #get time lapsed between now and article[2] in days, minutes, hours format
         #convert article[2] to datetime object
         tz = pytz.timezone('Asia/Kolkata')
         time_now = datetime.datetime.now(tz) 
         time_now = dateutil.parser.parse(time_now.strftime("%Y-%m-%d %H:%M:%S.%f%z"))
         orig_time = dateutil.parser.parse(str(article[2]))   
+        #calculate time difference between time_now and orig time in mins
+        time_lapsed = timeago.format(time_now, orig_time,'en_short')
+        time_lapsed = str(time_lapsed)[3:len(time_lapsed)]
 
-        time_lapsed = time_now - orig_time
-        
-        #caculate time lapsed in days, hours, minutes format
-        minutes = (time_lapsed.seconds // 60) % 60
-        time_lapsed =  str(minutes) + "m"
         articles_json.append({"article_title": article[0], "article_url": article[1], "time_of_insertion": article[2], "time_lapsed": time_lapsed})
+    
     return articles_json
 
