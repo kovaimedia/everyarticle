@@ -19,3 +19,4 @@ datetime==4.3
 python-dotenv==1.0.0
 feedparser
 python-dateutil
+timeago
