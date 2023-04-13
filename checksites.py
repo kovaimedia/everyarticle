@@ -10,6 +10,8 @@ Nitin_Gadkari_alert = "https://www.google.com/alerts/feeds/10475738491546675429/
 MORTH_alert = "https://www.google.com/alerts/feeds/10475738491546675429/14736463604676785656"
 RRTS_alert = "https://www.google.com/alerts/feeds/10475738491546675429/5870660820628805083"
 vande_bharat = "https://www.google.com/alerts/feeds/10475738491546675429/7073915936907604684"
+MAHSR = "https://www.google.com/alerts/feeds/10475738491546675429/3692549460662323318"
+NHSRC = "https://www.google.com/alerts/feeds/10475738491546675429/10590118476679497064"
 
 def check_sites_now():
    
@@ -38,6 +40,16 @@ def check_sites_now():
     articles_list = sitescripts.fetch_rss(
         vande_bharat, "Vande Bharat Alert")
     process_articles_list(articles_list)
+
+    articles_list = sitescripts.fetch_rss(
+        MAHSR, "MAHSR Alert")
+    process_articles_list(articles_list)
+
+    articles_list = sitescripts.fetch_rss(
+        NHSRC, "NHSRCL Alert")
+    process_articles_list(articles_list)
+
+
 
 def process_articles_list(articles_list):
     for every_article in articles_list:
