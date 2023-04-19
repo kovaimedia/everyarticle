@@ -25,6 +25,9 @@ def check_sites_now():
     articles_list = sitescripts.get_from_ETInfra_and_Mint()
     process_articles_list(articles_list)
 
+    articles_list = sitescripts.getFrom_PBI("Ministry of Road Transport & Highways", "All")
+    process_articles_list(articles_list)
+
     articles_list = sitescripts.fetch_rss(
         Nitin_Gadkari_alert, "Nitin Gadkari Alert")
     process_articles_list(articles_list)

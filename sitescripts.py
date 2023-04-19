@@ -1,5 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import Select
+import time
 
 def get_from_ETInfra_and_Mint():
 
@@ -53,3 +57,47 @@ def fetch_rss(source_url, source_txt):
 
     return results
 
+
+def getFrom_PBI(option, day):
+    #turn off the chorme browser popup when scraping
+    articles = []
+
+    options = webdriver.ChromeOptions()
+    options.add_argument('--no-sandbox')
+    options.add_argument('headless')
+    driver = webdriver.Chrome(options=options)
+    
+    url = "https://www.pib.gov.in/allRel.aspx"
+    driver.get(url)
+
+    soup = BeautifulSoup(driver.page_source, "html.parser")
+
+    ministry_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlMinistry"))
+    ministry_select.select_by_visible_text(option)
+
+    day_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlday"))
+    # select the option tag with text "All"
+    day_select.select_by_visible_text(day)
+
+    print(driver.page_source)
+
+    content_area = driver.find_element(By.CLASS_NAME, "leftul")
+    # leftul = soup.find("ul", {"class": "leftul"})
+    time.sleep(5)
+    # find all tag li
+
+    content_area = content_area.find_elements(By.TAG_NAME, "li")
+    print(len(content_area))
+
+    if len(content_area) == 0:
+        print("No data found")
+        return 
+    else:
+        for li in content_area:
+            a = li.find_element(By.TAG_NAME, "a")
+            title = a.text
+            href = a.get_attribute("href")
+            articles.append({"title": title, "link": href,"source":"PBI"})
+    # close the driver
+    driver.quit()
+    return articles
