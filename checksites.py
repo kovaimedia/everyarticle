@@ -14,6 +14,8 @@ MAHSR = "https://www.google.com/alerts/feeds/10475738491546675429/36925494606623
 NHSRC = "https://www.google.com/alerts/feeds/10475738491546675429/10590118476679497064"
 
 def check_sites_now():
+
+    pib_list = [{option: "Ministry of Road Transport & Highways", day: "All", source_txt: "PIB-MORTH"},{option: "Ministry of Railways", day: "All", source_txt: "PIB-Railways"}]
    
     # set the timezone to IST
     ist = pytz.timezone('Asia/Kolkata')
@@ -25,8 +27,10 @@ def check_sites_now():
     articles_list = sitescripts.get_from_ETInfra_and_Mint()
     process_articles_list(articles_list)
 
-    articles_list = sitescripts.getFrom_PBI("Ministry of Road Transport & Highways", "All")
-    process_articles_list(articles_list)
+    for every_pib in pib_list:
+        articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
+        process_articles_list(articles_list)
+    
 
     articles_list = sitescripts.fetch_rss(
         Nitin_Gadkari_alert, "Nitin Gadkari Alert")

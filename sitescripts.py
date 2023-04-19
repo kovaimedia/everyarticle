@@ -58,7 +58,7 @@ def fetch_rss(source_url, source_txt):
     return results
 
 
-def getFrom_PBI(option, day):
+def getFrom_PBI(option, day, source_txt):
     #turn off the chorme browser popup when scraping
     articles = []
 
@@ -97,7 +97,7 @@ def getFrom_PBI(option, day):
             a = li.find_element(By.TAG_NAME, "a")
             title = a.text
             href = a.get_attribute("href")
-            articles.append({"title": title, "link": href,"source":"PBI"})
+            articles.append({"title": title, "link": href,"source":source_txt})
     # close the driver
     driver.quit()
     return articles
