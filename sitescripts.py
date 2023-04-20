@@ -105,5 +105,7 @@ def getFrom_PBI(option, day, source_txt):
         return articles
     except:
         articles = []
-        print("Error")
+        #print what caused the error
+        print("Error in PIB")
+    
         return articles
