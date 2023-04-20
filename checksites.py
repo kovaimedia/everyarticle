@@ -15,7 +15,8 @@ NHSRC = "https://www.google.com/alerts/feeds/10475738491546675429/10590118476679
 
 def check_sites_now():
 
-    pib_list = [{option: "Ministry of Road Transport & Highways", day: "All", source_txt: "PIB-MORTH"},{option: "Ministry of Railways", day: "All", source_txt: "PIB-Railways"}]
+    pib_list = [{"option": "Ministry of Road Transport & Highways", "day": "All", "source_txt": "PIB-MORTH"},
+                {"option": "Ministry of Railways", "day": "All", "source_txt": "PIB-Railways"}]
    
     # set the timezone to IST
     ist = pytz.timezone('Asia/Kolkata')
