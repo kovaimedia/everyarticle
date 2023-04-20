@@ -59,45 +59,51 @@ def fetch_rss(source_url, source_txt):
 
 
 def getFrom_PBI(option, day, source_txt):
-    #turn off the chorme browser popup when scraping
-    articles = []
+    try:
 
-    options = webdriver.ChromeOptions()
-    options.add_argument('--no-sandbox')
-    options.add_argument('headless')
-    driver = webdriver.Chrome(options=options)
-    
-    url = "https://www.pib.gov.in/allRel.aspx"
-    driver.get(url)
+        #turn off the chorme browser popup when scraping
+        articles = []
 
-    soup = BeautifulSoup(driver.page_source, "html.parser")
+        options = webdriver.ChromeOptions()
+        options.add_argument('--no-sandbox')
+        options.add_argument('headless')
+        driver = webdriver.Chrome(options=options)
+        
+        url = "https://www.pib.gov.in/allRel.aspx"
+        driver.get(url)
 
-    ministry_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlMinistry"))
-    ministry_select.select_by_visible_text(option)
+        soup = BeautifulSoup(driver.page_source, "html.parser")
 
-    day_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlday"))
-    # select the option tag with text "All"
-    day_select.select_by_visible_text(day)
+        ministry_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlMinistry"))
+        ministry_select.select_by_visible_text(option)
 
-    print(driver.page_source)
+        day_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlday"))
+        # select the option tag with text "All"
+        day_select.select_by_visible_text(day)
 
-    content_area = driver.find_element(By.CLASS_NAME, "leftul")
-    # leftul = soup.find("ul", {"class": "leftul"})
-    time.sleep(5)
-    # find all tag li
+        print(driver.page_source)
 
-    content_area = content_area.find_elements(By.TAG_NAME, "li")
-    print(len(content_area))
+        content_area = driver.find_element(By.CLASS_NAME, "leftul")
+        # leftul = soup.find("ul", {"class": "leftul"})
+        time.sleep(5)
+        # find all tag li
 
-    if len(content_area) == 0:
-        print("No data found")
-        return 
-    else:
-        for li in content_area:
-            a = li.find_element(By.TAG_NAME, "a")
-            title = a.text
-            href = a.get_attribute("href")
-            articles.append({"title": title, "link": href,"source":source_txt})
-    # close the driver
-    driver.quit()
-    return articles
+        content_area = content_area.find_elements(By.TAG_NAME, "li")
+        print(len(content_area))
+
+        if len(content_area) == 0:
+            print("No data found")
+            return 
+        else:
+            for li in content_area:
+                a = li.find_element(By.TAG_NAME, "a")
+                title = a.text
+                href = a.get_attribute("href")
+                articles.append({"title": title, "link": href,"source":source_txt})
+        # close the driver
+        driver.quit()
+        return articles
+    except:
+        articles = []
+        print("Error")
+        return articles
