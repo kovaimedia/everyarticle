@@ -30,7 +30,7 @@ def insert_article(article_title: str, article_url: str, source: str):
     conn.commit()
     cursor.close()
     
-    print("Inserting: " + article_title)
+    print(source +  ": Inserting: " + article_title)
     return {"article_title": article_title, "article_url": article_url}
 
 #check if article is already in database, use url as unique identifier, return 0 if no record found
