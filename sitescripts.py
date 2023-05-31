@@ -66,7 +66,7 @@ def getFrom_PBI(option, day, source_txt):
         articles = []
         options = webdriver.ChromeOptions()
         options.add_argument('--no-sandbox')
-        options.add_argument('headless')
+        options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
         
         url = "https://www.pib.gov.in/allRel.aspx"
