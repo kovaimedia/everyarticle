@@ -8,7 +8,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 import os
 
 #get the path of chrome binary and set it as an environment variable
-path = os.popen('whereis chromium-browser').read().split(' ')[1]
+path = os.popen('whereis chromium-browser').read()
 print("Path: ", path)
 os.environ["webdriver.chrome.driver"] = path
 

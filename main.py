@@ -14,7 +14,7 @@ try:
     print("Packages installed Paths: ", os.system('whereis chromium-browser'))
     print("Packages installed Paths: ", os.system('whereis google-chrome'))
     #get the path of chromium-browser and set it as an environment variable
-    path = os.popen('whereis chromium-browser').read().split(' ')[1]
+    path = os.popen('whereis chromium-browser').read()
     print("Path: ", path)
 
 except Exception as e:
