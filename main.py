@@ -7,7 +7,14 @@ import push_notif
 import os
 
 app = FastAPI()
-print(os.system("sudo apt-get install -y chromium-browser"))
+
+#install chrome browser for selenium in my server
+os.system("sudo apt-get update")
+
+try:
+    print(os.system("sudo apt-get install -y chromium-browser"))
+except Exception as e:
+    print("Error in installing chromium-browser: ", e)
 
 
 #use apscheduler to run check_sites every 10 minutes
