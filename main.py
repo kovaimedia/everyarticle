@@ -7,7 +7,7 @@ import push_notif
 import os
 
 app = FastAPI()
-print(os.system("sudo apt-get install chromium-chromedriver"))
+print(os.system("sudo apt-get install -y chromium-browser"))
 
 
 #use apscheduler to run check_sites every 10 minutes
