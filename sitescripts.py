@@ -4,6 +4,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 import time
+from webdriver_manager.chrome import ChromeDriverManager
 
 def get_from_ETInfra_and_Mint():
 
