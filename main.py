@@ -4,8 +4,11 @@ from fastapi import Request
 import checksites
 import db_functions
 import push_notif
+import os
 
 app = FastAPI()
+print(os.system("sudo apt-get install chromium-chromedriver"))
+
 
 #use apscheduler to run check_sites every 10 minutes
 from apscheduler.schedulers.background import BackgroundScheduler
