@@ -8,18 +8,6 @@ import os
 
 app = FastAPI()
 
-try:
-    os.system('sudo apt-get update')
-    os.system('apt-get install -y libglib2.0 libnss3 libgconf-2-4 libfontconfig1')
-    print("Packages installed Paths: ", os.system('whereis chromium-browser'))
-    print("Packages installed Paths: ", os.system('whereis google-chrome'))
-    #get the path of chromium-browser and set it as an environment variable
-    path = os.popen('whereis chromium-browser').read()
-    print("Path: ", path)
-
-except Exception as e:
-    print("Error in installing chromium-browser: ", e)
-
 
 #use apscheduler to run check_sites every 10 minutes
 from apscheduler.schedulers.background import BackgroundScheduler

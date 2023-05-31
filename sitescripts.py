@@ -4,13 +4,6 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 import time
-from webdriver_manager.chrome import ChromeDriverManager
-import os
-
-#get the path of chrome binary and set it as an environment variable
-path = os.popen('whereis chromium-browser').read()
-print("Path: ", path)
-os.environ["webdriver.chrome.driver"] = path
 
 
 def get_from_ETInfra_and_Mint():
@@ -71,9 +64,7 @@ def getFrom_PBI(option, day, source_txt):
 
         #turn off the chorme browser popup when scraping
         articles = []
-        chrome_binary = path
         options = webdriver.ChromeOptions()
-        options.binary_location = chrome_binary
         options.add_argument('--no-sandbox')
         options.add_argument('headless')
         driver = webdriver.Chrome(options=options)
