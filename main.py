@@ -8,11 +8,9 @@ import os
 
 app = FastAPI()
 
-#install chrome browser for selenium in my server
-os.system("sudo apt-get update")
-
 try:
-    print(os.system("sudo apt-get install -y chromium-browser"))
+    os.system('sudo apt-get update')
+    os.system('sudo apt-get install -y google-chrome-stable')
 except Exception as e:
     print("Error in installing chromium-browser: ", e)
 
