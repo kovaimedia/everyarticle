@@ -103,9 +103,9 @@ def getFrom_PBI(option, day, source_txt):
         # close the driver
         driver.quit()
         return articles
-    except:
+    except Exception as e:
         articles = []
         #print what caused the error
-        print("Error in PIB")
+        print("Error in PIB: ", e)
     
         return articles
