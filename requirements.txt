@@ -21,4 +21,4 @@ python-dotenv==1.0.0
 feedparser
 python-dateutil
 timeago
-webdriver_manager
+webdriver-manager==3.8.6

@@ -5,6 +5,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 import time
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 def get_from_ETInfra_and_Mint():
 
@@ -68,7 +69,7 @@ def getFrom_PBI(option, day, source_txt):
         options = webdriver.ChromeOptions()
         options.add_argument('--no-sandbox')
         options.add_argument('headless')
-        driver = webdriver.Chrome(ChromeDriverManager().install(),options=options)
+        driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=options)
         
         url = "https://www.pib.gov.in/allRel.aspx"
         driver.get(url)
