@@ -56,9 +56,7 @@ def check_sites_now():
 
     for every_pib in pib_list:
         #use asyncio to run the function in parallel
-        loop = asyncio.get_event_loop()
-        articles_list = loop.run_until_complete(sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt']))
-        loop.close()
+        articles_list = asyncio.get_event_loop().run_until_complete(sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt']))
         process_articles_list(articles_list)
 
         # articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
