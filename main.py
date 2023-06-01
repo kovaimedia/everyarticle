@@ -20,9 +20,7 @@ scheduler.start()
 async def redirect_function():
     await checksites.check_sites_now()
 
-loop = asyncio.get_event_loop()
-loop.run_until_complete(redirect_function)
-loop.close()
+asyncio.run(main=redirect_function())
 
 class Msg(BaseModel):
     msg: str

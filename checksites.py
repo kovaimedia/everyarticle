@@ -16,8 +16,7 @@ MAHSR = "https://www.google.com/alerts/feeds/10475738491546675429/36925494606623
 NHSRC = "https://www.google.com/alerts/feeds/10475738491546675429/10590118476679497064"
 
 async def redirect_function(every_pib):
-    articles_list = await sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
-    process_articles_list(articles_list)
+    return await sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
 
 
 async def check_sites_now():
@@ -61,8 +60,8 @@ async def check_sites_now():
 
     for every_pib in pib_list:
         #use asyncio to run the function in parallel
-        await redirect_function(every_pib)
-
+        articles_list = await redirect_function(every_pib)
+        process_articles_list(articles_list)
         # articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
         # process_articles_list(articles_list)
 
