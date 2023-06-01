@@ -20,7 +20,7 @@ async def redirect_function(every_pib):
     process_articles_list(articles_list)
 
 
-def check_sites_now():
+async def check_sites_now():
 
     pib_list = [{"option": "Ministry of Road Transport & Highways", "day": "All", "source_txt": "PIB-MORTH"},
                 {"option": "Ministry of Railways", "day": "All", "source_txt": "PIB-Railways"}]
