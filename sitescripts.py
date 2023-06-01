@@ -126,29 +126,10 @@ async def getFrom_PBI(option, day, source_txt):
         
 
 def redirecting_fun(option, day, source_txt):
-    async def getFrom_PBI_async(option, day, source_txt):
-        return await getFrom_PBI(option, day, source_txt)
-
-    async def run_async_code():
-        result = await getFrom_PBI_async(option, day, source_txt)
-        return result
-
-    loop = asyncio.get_event_loop()
-
-    # Create a context manager for the coroutine execution
-    async def execute_async_code():
-        nonlocal loop
-        result = await run_async_code()
-        loop.stop()
-
-        return result
-
-    # Run the event loop within the context manager
-    loop.run_until_complete(execute_async_code())
-
-    # Run the event loop until it is stopped
-    loop.run_forever()
-
-    return execute_async_code.result
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    articles = loop.run_until_complete(getFrom_PBI(option, day, source_txt))
+    loop.close()
+    return articles
 
 
