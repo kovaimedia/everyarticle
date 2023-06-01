@@ -1,10 +1,10 @@
 import requests
 from bs4 import BeautifulSoup
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import Select
 import time
-
+import asyncio
+from pyppeteer import launch
+from pyppeteer_stealth import stealth
+from pyppeteer.errors import NetworkError
 
 def get_from_ETInfra_and_Mint():
 
@@ -59,52 +59,69 @@ def fetch_rss(source_url, source_txt):
     return results
 
 
-def getFrom_PBI(option, day, source_txt):
+async def select_by_visible_text(page, selector, text):
+    script = """
+    (selector, text) => {
+        const options = Array.from(document.querySelectorAll(selector));
+        const selectedOption = options.find(option => option.innerText.trim() === text);
+        if (selectedOption) {
+            selectedOption.selected = true;
+            selectedOption.parentElement.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    }
+    """
+    await page.evaluate(script, selector, text)
+
+async def getFrom_PBI(option, day, source_txt):
     try:
+        try:
+            articles = []
 
-        #turn off the chorme browser popup when scraping
-        articles = []
-        options = webdriver.ChromeOptions()
-        options.add_argument('--headless')
-        driver = webdriver.Chrome(options=options)
-        
-        url = "https://www.pib.gov.in/allRel.aspx"
-        driver.get(url)
+            browser = await launch()
+            page = await browser.newPage()
+            await stealth(page)  # Apply stealth measures to mimic a human-like interaction
 
-        soup = BeautifulSoup(driver.page_source, "html.parser")
+            url = "https://www.pib.gov.in/allRel.aspx"
+            await page.goto(url)
+            await asyncio.sleep(2)
 
-        ministry_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlMinistry"))
-        ministry_select.select_by_visible_text(option)
+            # Select ministry option
+            await page.waitForSelector('#ContentPlaceHolder1_ddlMinistry')
+            await select_by_visible_text(page,'#ContentPlaceHolder1_ddlMinistry option', option)
+            await page.waitForNavigation()
+            # Select day option
+            await page.waitForSelector('#ContentPlaceHolder1_ddlday')
+            await select_by_visible_text(page,'#ContentPlaceHolder1_ddlday option', day)
+            await page.waitForNavigation()
+            
+            await page.waitForSelector("#ContentPlaceHolder1_ddlMonth")
+            await select_by_visible_text(page,'#ContentPlaceHolder1_ddlMonth option', "May")
 
-        day_select = Select(driver.find_element(By.ID, "ContentPlaceHolder1_ddlday"))
-        # select the option tag with text "All"
-        day_select.select_by_visible_text(day)
+            # Wait for the results to load
+            await asyncio.sleep(5)
 
-        print(driver.page_source)
+            # Extract the article elements
+            articles_elements = await page.querySelectorAll('.leftul li')
+            if len(articles_elements) == 0:
+                print("No data found")
+            else:
+                for article_element in articles_elements:
+                    title_element = await article_element.querySelector('a')
+                    title = await page.evaluate('(element) => element.textContent', title_element)
+                    href = await page.evaluate('(element) => element.getAttribute("href")', title_element)
+                    href = "https://www.pib.gov.in" + href
+                    articles.append({"title": title, "link": href, "source": source_txt})
 
-        content_area = driver.find_element(By.CLASS_NAME, "leftul")
-        # leftul = soup.find("ul", {"class": "leftul"})
-        time.sleep(5)
-        # find all tag li
-
-        content_area = content_area.find_elements(By.TAG_NAME, "li")
-        print(len(content_area))
-
-        if len(content_area) == 0:
-            print("No data found")
-            return 
-        else:
-            for li in content_area:
-                a = li.find_element(By.TAG_NAME, "a")
-                title = a.text
-                href = a.get_attribute("href")
-                articles.append({"title": title, "link": href,"source":source_txt})
-        # close the driver
-        driver.quit()
-        return articles
+            await browser.close()
+            return articles
+        except NetworkError as e:
+            await asyncio.sleep(2)
+            print("Error in Network:", e)
+            await browser.close()
+            return articles
     except Exception as e:
         articles = []
-        #print what caused the error
-        print("Error in PIB: ", e)
-    
+        await browser.close()
+        print("Error in PIB:", e)
         return articles
+        
