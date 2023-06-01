@@ -74,7 +74,6 @@ async def select_by_visible_text(page, selector, text):
 
 async def getFrom_PBI(option, day, source_txt):
     try:
-        browser = None
         try:
             articles = []
             browser = await launch()
@@ -122,7 +121,6 @@ async def getFrom_PBI(option, day, source_txt):
             return articles
     except Exception as e:
         articles = []
-        await browser.close()
         print("Error in PIB:", e)
         return articles
         
@@ -135,16 +133,14 @@ def redirecting_fun(option, day, source_txt):
         result = await getFrom_PBI_async(option, day, source_txt)
         return result
 
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    loop = asyncio.get_event_loop()
+    task = asyncio.create_task(run_async_code())  # or use asyncio.create_task() in Python 3.7+
 
-    # Run the event loop until the coroutine is complete
-    result = loop.run_until_complete(run_async_code())
+    # Run the event loop until the task is complete
+    loop.run_until_complete(task)
 
-    # Close the event loop
-    loop.close()
-
+    # Retrieve the result from the completed task
+    result = task.result()
     return result
-
 
 
