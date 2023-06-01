@@ -129,11 +129,12 @@ async def getFrom_PBI(option, day, source_txt):
 def redirecting_fun(option, day, source_txt):
     async def getFrom_PBI_async(option, day, source_txt):
         return await getFrom_PBI(option, day, source_txt)
-    
+
     async def run_async_code():
         result = await getFrom_PBI_async(option, day, source_txt)
         return result
-    
-    return asyncio.run(run_async_code())
+
+    loop = asyncio.get_event_loop()
+    return loop.run_until_complete(run_async_code())
 
 
