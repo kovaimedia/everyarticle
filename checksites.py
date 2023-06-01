@@ -15,6 +15,11 @@ vande_bharat = "https://www.google.com/alerts/feeds/10475738491546675429/7073915
 MAHSR = "https://www.google.com/alerts/feeds/10475738491546675429/3692549460662323318"
 NHSRC = "https://www.google.com/alerts/feeds/10475738491546675429/10590118476679497064"
 
+async def redirect_function(every_pib):
+    articles_list = await sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
+    process_articles_list(articles_list)
+
+
 def check_sites_now():
 
     pib_list = [{"option": "Ministry of Road Transport & Highways", "day": "All", "source_txt": "PIB-MORTH"},
@@ -56,8 +61,11 @@ def check_sites_now():
 
     for every_pib in pib_list:
         #use asyncio to run the function in parallel
-        articles_list = asyncio.get_event_loop().run_until_complete(sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt']))
-        process_articles_list(articles_list)
+        loop = asyncio.get_event_loop()
+        try:
+            loop.run_until_complete(redirect_function(every_pib))
+        finally:
+            loop.close()
 
         # articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
         # process_articles_list(articles_list)
