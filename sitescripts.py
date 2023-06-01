@@ -126,10 +126,8 @@ async def getFrom_PBI(option, day, source_txt):
         
 
 def redirecting_fun(option, day, source_txt):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    articles = loop.run_until_complete(getFrom_PBI(option, day, source_txt))
-    loop.close()
-    return articles
+    results = asyncio.get_event_loop().run_until_complete(getFrom_PBI(option, day, source_txt))
+    return results
+    
 
 
