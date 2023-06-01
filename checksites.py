@@ -4,6 +4,8 @@ from json import dumps
 from httplib2 import Http
 import pytz
 from datetime import datetime
+import asyncio
+
 
     
 Nitin_Gadkari_alert = "https://www.google.com/alerts/feeds/10475738491546675429/9073726971275308502"
@@ -53,8 +55,14 @@ def check_sites_now():
     process_articles_list(articles_list)
 
     for every_pib in pib_list:
-        articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
+        #use asyncio to run the function in parallel
+        loop = asyncio.get_event_loop()
+        articles_list = loop.run_until_complete(sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt']))
+        loop.close()
         process_articles_list(articles_list)
+
+        # articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
+        # process_articles_list(articles_list)
 
 
 def process_articles_list(articles_list):
