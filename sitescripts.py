@@ -134,13 +134,16 @@ def redirecting_fun(option, day, source_txt):
         return result
 
     loop = asyncio.get_event_loop()
-    task = asyncio.create_task(run_async_code())  # or use asyncio.create_task() in Python 3.7+
 
-    # Run the event loop until the task is complete
-    loop.run_until_complete(task)
+    # Create a context manager for the coroutine execution
+    async def execute_async_code():
+        async with loop:
+            result = await run_async_code()
+            return result
 
-    # Retrieve the result from the completed task
-    result = task.result()
+    # Run the event loop within the context manager
+    result = asyncio.run(execute_async_code())
+
     return result
 
 
