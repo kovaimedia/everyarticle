@@ -17,8 +17,11 @@ scheduler.add_job(checksites.check_sites_now, 'interval', minutes=10)
 scheduler.print_jobs()
 scheduler.start()
 
+async def redirect_function():
+    await checksites.check_sites_now()
+
 loop = asyncio.get_event_loop()
-loop.run_until_complete(checksites.check_sites_now())
+loop.run_until_complete(redirect_function)
 loop.close()
 
 class Msg(BaseModel):
