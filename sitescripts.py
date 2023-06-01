@@ -125,3 +125,14 @@ async def getFrom_PBI(option, day, source_txt):
         print("Error in PIB:", e)
         return articles
         
+
+def redirecting_fun(option, day, source_txt):
+    #make a async function to call the async function getFrom_PBI
+    async def getFrom_PBI_async(option, day, source_txt):
+        return await getFrom_PBI(option, day, source_txt)
+    
+    #call the async function
+    result = asyncio.run(getFrom_PBI_async(option, day, source_txt))
+    return result
+
+

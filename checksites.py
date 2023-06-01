@@ -4,8 +4,6 @@ from json import dumps
 from httplib2 import Http
 import pytz
 from datetime import datetime
-import asyncio
-
 
     
 Nitin_Gadkari_alert = "https://www.google.com/alerts/feeds/10475738491546675429/9073726971275308502"
@@ -15,11 +13,7 @@ vande_bharat = "https://www.google.com/alerts/feeds/10475738491546675429/7073915
 MAHSR = "https://www.google.com/alerts/feeds/10475738491546675429/3692549460662323318"
 NHSRC = "https://www.google.com/alerts/feeds/10475738491546675429/10590118476679497064"
 
-async def redirect_function(every_pib):
-    return await sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
-
-
-async def check_sites_now():
+def check_sites_now():
 
     pib_list = [{"option": "Ministry of Road Transport & Highways", "day": "All", "source_txt": "PIB-MORTH"},
                 {"option": "Ministry of Railways", "day": "All", "source_txt": "PIB-Railways"}]
@@ -59,11 +53,9 @@ async def check_sites_now():
     process_articles_list(articles_list)
 
     for every_pib in pib_list:
-        #use asyncio to run the function in parallel
-        articles_list = await redirect_function(every_pib)
+        print("Checking PIB -> " + every_pib['option'])
+        articles_list = sitescripts.redirecting_fun(every_pib['option'], every_pib['day'], every_pib['source_txt'])
         process_articles_list(articles_list)
-        # articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
-        # process_articles_list(articles_list)
 
 
 def process_articles_list(articles_list):
@@ -94,3 +86,4 @@ def trigger_notification(article_title, article_url, article_source):
         body=dumps(bot_message),
     )
 
+check_sites_now()

@@ -11,16 +11,11 @@ app = FastAPI()
 
 #use apscheduler to run check_sites every 10 minutes
 from apscheduler.schedulers.background import BackgroundScheduler
-import asyncio
 scheduler = BackgroundScheduler()
 scheduler.add_job(checksites.check_sites_now, 'interval', minutes=10)
 scheduler.print_jobs()
 scheduler.start()
-
-async def redirect_function():
-    await checksites.check_sites_now()
-
-asyncio.run(main=redirect_function())
+checksites.check_sites_now()
 
 class Msg(BaseModel):
     msg: str
