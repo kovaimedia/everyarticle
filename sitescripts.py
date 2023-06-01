@@ -65,7 +65,6 @@ def getFrom_PBI(option, day, source_txt):
         #turn off the chorme browser popup when scraping
         articles = []
         options = webdriver.ChromeOptions()
-        options.add_argument('--no-sandbox')
         options.add_argument('--headless')
         driver = webdriver.Chrome(options=options)
         
