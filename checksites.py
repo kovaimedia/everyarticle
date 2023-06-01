@@ -61,11 +61,7 @@ async def check_sites_now():
 
     for every_pib in pib_list:
         #use asyncio to run the function in parallel
-        loop = asyncio.get_event_loop()
-        try:
-            loop.run_until_complete(redirect_function(every_pib))
-        finally:
-            loop.close()
+        await redirect_function(every_pib)
 
         # articles_list = sitescripts.getFrom_PBI(every_pib['option'], every_pib['day'], every_pib['source_txt'])
         # process_articles_list(articles_list)
