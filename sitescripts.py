@@ -135,6 +135,13 @@ def redirecting_fun(option, day, source_txt):
         return result
 
     loop = asyncio.get_event_loop()
-    return loop.run_until_complete(run_async_code())
+    task = asyncio.create_task(run_async_code())  # or use asyncio.create_task() in Python 3.7+
+
+    # Run the event loop until the task is complete
+    loop.run_until_complete(task)
+
+    # Retrieve the result from the completed task
+    result = task.result()
+    return result
 
 
