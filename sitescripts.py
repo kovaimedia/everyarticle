@@ -137,13 +137,18 @@ def redirecting_fun(option, day, source_txt):
 
     # Create a context manager for the coroutine execution
     async def execute_async_code():
-        async with loop:
-            result = await run_async_code()
-            return result
+        nonlocal loop
+        result = await run_async_code()
+        loop.stop()
+
+        return result
 
     # Run the event loop within the context manager
-    result = asyncio.run(execute_async_code())
+    loop.run_until_complete(execute_async_code())
 
-    return result
+    # Run the event loop until it is stopped
+    loop.run_forever()
+
+    return execute_async_code.result
 
 
