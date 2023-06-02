@@ -54,7 +54,7 @@ def check_sites_now():
 
     for every_pib in pib_list:
         print("Checking PIB -> " + every_pib['option'])
-        articles_list = sitescripts.redirecting_fun(every_pib['option'], every_pib['day'], every_pib['source_txt'])
+        articles_list = sitescripts.getFrom_PIB(every_pib['option'], every_pib['day'], every_pib['source_txt'])
         process_articles_list(articles_list)
 
 

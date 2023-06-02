@@ -1,10 +1,15 @@
 import requests
+import feedparser
+import json
 from bs4 import BeautifulSoup
 import time
-import asyncio
-from pyppeteer import launch
-from pyppeteer_stealth import stealth
-from pyppeteer.errors import NetworkError
+import scrapy
+import scrapydo
+from scrapy.crawler import CrawlerRunner
+from twisted.internet import reactor
+from pipelines import PIBPipeline
+
+pib_articles = []
 
 def get_from_ETInfra_and_Mint():
 
@@ -37,8 +42,7 @@ def get_from_ETInfra_and_Mint():
 
     return articles
 
-import feedparser
-import json
+
 
 def fetch_rss(source_url, source_txt):
     # Parse the RSS feed using the feedparser library
@@ -59,75 +63,77 @@ def fetch_rss(source_url, source_txt):
     return results
 
 
-async def select_by_visible_text(page, selector, text):
-    script = """
-    (selector, text) => {
-        const options = Array.from(document.querySelectorAll(selector));
-        const selectedOption = options.find(option => option.innerText.trim() === text);
-        if (selectedOption) {
-            selectedOption.selected = true;
-            selectedOption.parentElement.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-    }
-    """
-    await page.evaluate(script, selector, text)
+class PIBSpider(scrapy.Spider):
+    name = 'pib'
+    start_urls = ['https://www.pib.gov.in/allRel.aspx']
 
-async def getFrom_PBI(option, day, source_txt):
-    try:
-        try:
-            articles = []
-            browser = await launch()
+    def parse(self, response):
+        # Select ministry option    
+        ministry_option = response.xpath(f'//*[@id="ContentPlaceHolder1_ddlMinistry"]/option[text()="{self.option}"]')
+        ministry_option_value = ministry_option.attrib['value']
+        ministry_option_text = ministry_option.xpath('string()').get()
+        print("Ministry Option:", ministry_option_value, ministry_option_text)
+        yield scrapy.FormRequest.from_response(
+            response,
+            formid='ContentPlaceHolder1_ddlMinistry',
+            formdata={'ctl00$ContentPlaceHolder1$ddlMinistry': ministry_option_value},
+            callback=self.parse_day
+        )
 
-            page = await browser.newPage()
-            await stealth(page)  # Apply stealth measures to mimic a human-like interaction
+    def parse_day(self, response):
+        # Select day option
+        day_option = response.xpath(f'//*[@id="ContentPlaceHolder1_ddlday"]/option[text()="{self.day}"]')
+        day_option_value = day_option.attrib['value']
+        day_option_text = day_option.get()
+        print("Day Option:", day_option_value, day_option_text)
+        yield scrapy.FormRequest.from_response(
+            response,
+            formid='ContentPlaceHolder1_ddlday',  # Replace with the actual form ID
+            formdata={'ctl00$ContentPlaceHolder1$ddlday': day_option_value},
+            callback=self.parse_articles
+        )
 
-            url = "https://www.pib.gov.in/allRel.aspx"
-            await page.goto(url)
-            await asyncio.sleep(2)
-
-            # Select ministry option
-            await page.waitForSelector('#ContentPlaceHolder1_ddlMinistry')
-            await select_by_visible_text(page,'#ContentPlaceHolder1_ddlMinistry option', option)
-            await page.waitForNavigation()
-            # Select day option
-            await page.waitForSelector('#ContentPlaceHolder1_ddlday')
-            await select_by_visible_text(page,'#ContentPlaceHolder1_ddlday option', day)
-            await page.waitForNavigation()
-            
-            await page.waitForSelector("#ContentPlaceHolder1_ddlMonth")
-            await select_by_visible_text(page,'#ContentPlaceHolder1_ddlMonth option', "May")
-
-            # Wait for the results to load
-            await asyncio.sleep(5)
-
-            # Extract the article elements
-            articles_elements = await page.querySelectorAll('.leftul li')
-            if len(articles_elements) == 0:
-                print("No data found")
-            else:
-                for article_element in articles_elements:
-                    title_element = await article_element.querySelector('a')
-                    title = await page.evaluate('(element) => element.textContent', title_element)
-                    href = await page.evaluate('(element) => element.getAttribute("href")', title_element)
-                    href = "https://www.pib.gov.in" + href
-                    articles.append({"title": title, "link": href, "source": source_txt})
-
-            await browser.close()
-            return articles
-        except NetworkError as e:
-            await asyncio.sleep(2)
-            print("Error in Network:", e)
-            await browser.close()
-            return articles
-    except Exception as e:
+    def parse_articles(self, response):
         articles = []
-        print("Error in PIB:", e)
-        return articles
-        
+        article_elements = response.xpath('//*[@id="form1"]/section[2]/div/div[7]/div/div/ul/li/ul')
 
-def redirecting_fun(option, day, source_txt):
-    results = asyncio.get_event_loop().run_until_complete(getFrom_PBI(option, day, source_txt))
-    return results
+        if not article_elements:
+            print("No data found")
+        else:
+            for article_element in article_elements:
+                title_element = article_element.xpath('.//a')
+                title = title_element.xpath('string()').get()
+                href = title_element.attrib['href']
+                href = response.urljoin(href)
+                articles.append({"title": title, "link": href, "source": self.source_txt})
+                pib_articles.append({"title": title, "link": href, "source": self.source_txt})
+            print("Articles:", articles)
+            yield {"articles": articles}  # Yield the scraped articles as an item
+
+
+def getFrom_PIB(option, day, source_txt):
     
+    def collect_results(item, spider):
+        articles = item['articles']
+        results.extend(articles)
+
+    crawler_settings = {
+        'ITEM_PIPELINES': {'pipelines.PIBPipeline': 300}
+    }
+
+    scrapydo.setup()
+    scrapydo.run_spider(
+        PIBSpider,
+        settings=crawler_settings,
+        option=option,
+        day=day,
+        source_txt=source_txt,
+        callbacks=[collect_results]
+    )
+    
+    results = pib_articles
+    return results
 
 
+# res = getFrom_PIB("Ministry of Railways", "All", "PIB")
+# print("Result:", res)
