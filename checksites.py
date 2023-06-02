@@ -85,5 +85,3 @@ def trigger_notification(article_title, article_url, article_source):
         headers=message_headers,
         body=dumps(bot_message),
     )
-
-check_sites_now()

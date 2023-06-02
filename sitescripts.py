@@ -72,7 +72,6 @@ class PIBSpider(scrapy.Spider):
         ministry_option = response.xpath(f'//*[@id="ContentPlaceHolder1_ddlMinistry"]/option[text()="{self.option}"]')
         ministry_option_value = ministry_option.attrib['value']
         ministry_option_text = ministry_option.xpath('string()').get()
-        print("Ministry Option:", ministry_option_value, ministry_option_text)
         yield scrapy.FormRequest.from_response(
             response,
             formid='ContentPlaceHolder1_ddlMinistry',
@@ -85,7 +84,6 @@ class PIBSpider(scrapy.Spider):
         day_option = response.xpath(f'//*[@id="ContentPlaceHolder1_ddlday"]/option[text()="{self.day}"]')
         day_option_value = day_option.attrib['value']
         day_option_text = day_option.get()
-        print("Day Option:", day_option_value, day_option_text)
         yield scrapy.FormRequest.from_response(
             response,
             formid='ContentPlaceHolder1_ddlday',  # Replace with the actual form ID
@@ -134,6 +132,3 @@ def getFrom_PIB(option, day, source_txt):
     results = pib_articles
     return results
 
-
-# res = getFrom_PIB("Ministry of Railways", "All", "PIB")
-# print("Result:", res)
