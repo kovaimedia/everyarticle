@@ -48,7 +48,7 @@ def check_article(article_url):
 def get_articles(source_option):
    
     cursor = conn.cursor()
-    cursor.execute("SELECT article_title, article_url, time_of_insertion, source FROM scrapped_articles WHERE source = %s ORDER BY time_of_insertion DESC LIMIT 25", (source_option,))
+    cursor.execute("SELECT article_title, article_url, time_of_insertion, source, id FROM scrapped_articles WHERE source = %s ORDER BY time_of_insertion DESC LIMIT 25", (source_option,))
     articles = cursor.fetchall()
     cursor.close()
     #parse articles into a json
@@ -66,7 +66,7 @@ def get_articles(source_option):
         time_lapsed = timeago.format(time_now, orig_time,'en_short')
         time_lapsed = str(time_lapsed)[3:len(time_lapsed)]
 
-        articles_json.append({"article_title": article[0], "article_url": article[1], "time_of_insertion": article[2], "time_lapsed": time_lapsed, "source_name": article[3]})
+        articles_json.append({"article_title": article[0], "article_url": article[1], "time_of_insertion": article[2], "time_lapsed": time_lapsed, "source_name": article[3], "id": article[4]})
     
     return articles_json
 
