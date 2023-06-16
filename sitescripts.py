@@ -25,7 +25,7 @@ def get_from_ETInfra_and_Mint():
         if a_tag:
             link = a_tag['href'] 
             text = a_tag.text.strip()
-            articles.append({"title": text, "link": link,"source":"ET Infra"})
+            articles.append({"title": text, "link": "https://infra.economictimes.indiatimes.com" + link,"source":"ET Infra"})
 
     url = 'https://www.livemint.com/industry/infrastructure'
     response = requests.get(url)
